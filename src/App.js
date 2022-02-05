@@ -13,15 +13,15 @@ function App() {
   }
   return (
     <div>
-      <Button variant="dark" className="ml-2 mt2" onClick={() => nav(`/AI`)}>
+      <Button variant="dark" className="ml-2 mt2" onClick={() => nav(`/P1`)}>
         With Bot
       </Button>
-      <Button variant="dark" className="ml-1 mt2" onClick={() => nav(`/users`)}>
+      <Button variant="dark" className="ml-1 mt2" onClick={() => nav(`/P2`)}>
         Two Players
       </Button>
       <Routes>
-        <Route path="/AI" element={<TicTacToe bot={true} />} />
-        <Route path="/users" element={<TicTacToe bot={false} />} />
+        <Route path="/P1" element={<TicTacToe bot={true} />} />
+        <Route path="/P2" element={<TicTacToe bot={false} />} />
       </Routes>
     </div>
   );
