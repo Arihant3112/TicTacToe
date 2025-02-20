@@ -1,10 +1,86 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import "./Board.css";
 const classesDefaultValue = ["", "", "", "", "", "", "", "", ""];
+const lines = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
 function Board({ bot, value, ...props }) {
   const [classes, setClasses] = React.useState(classesDefaultValue);
   let [turn, setTurn] = React.useState(true);
   let [gameOver, setGameOver] = React.useState(false);
+
+  const evaluate = useCallback((board) => {
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        if (board[a] === "circle") {
+          return -10;
+        } else if (board[a] === "x") {
+          return 10;
+        }
+      }
+    }
+    return 0;
+  }, []);
+
+  const minimax = useCallback(
+    (board, depth, isMax) => {
+      var score = evaluate(board);
+      if (score === 10) return score;
+      if (score === -10) return score;
+
+      if (isMovesLeft(board) === false) return 0;
+
+      if (isMax) {
+        let best = -1000;
+        for (let i = 0; i < 9; i++) {
+          if (board[i].length === 0) {
+            board[i] = "x";
+            best = Math.max(best, minimax([...board], depth + 1, !isMax));
+            board[i] = "";
+          }
+        }
+        return best;
+      } else {
+        let best = 1000;
+        for (var i = 0; i < 9; i++) {
+          if (board[i].length === 0) {
+            board[i] = "circle";
+            best = Math.min(best, minimax([...board], depth + 1, !isMax));
+            board[i] = "";
+          }
+        }
+        return best;
+      }
+    },
+    [evaluate]
+  );
+
+  const findBestMove = useCallback(() => {
+    var bestVal = -1000;
+    let row = -1;
+    let moveVal;
+    let brd = [...classes];
+    for (let i = 0; i < 9; i++) {
+      if (brd[i].length === 0) {
+        brd[i] = "x";
+        moveVal = minimax([...brd], 0, false);
+        brd[i] = "";
+        if (moveVal > bestVal) {
+          row = i;
+          bestVal = moveVal;
+        }
+      }
+    }
+    return row;
+  }, [classes, minimax]);
 
   useEffect(() => {
     setClasses([...classesDefaultValue]);
@@ -41,16 +117,7 @@ function Board({ bot, value, ...props }) {
       }
     }
   }
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
+
   function checkWinner(classes) {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
@@ -81,72 +148,9 @@ function Board({ bot, value, ...props }) {
     }
   }
 
-  function findBestMove() {
-    var bestVal = -1000;
-    let row = -1;
-    let moveVal;
-    let brd = [...classes];
-    for (let i = 0; i < 9; i++) {
-      if (brd[i].length === 0) {
-        brd[i] = "x";
-        moveVal = minimax([...brd], 0, false);
-        brd[i] = "";
-        if (moveVal > bestVal) {
-          row = i;
-          bestVal = moveVal;
-        }
-      }
-    }
-    return row;
-  }
-
-  function minimax(board, depth, isMax) {
-    var score = evaluate(board);
-    if (score === 10) return score;
-    if (score === -10) return score;
-
-    if (isMovesLeft(board) === false) return 0;
-
-    if (isMax) {
-      let best = -1000;
-      for (let i = 0; i < 9; i++) {
-        if (board[i].length === 0) {
-          board[i] = "x";
-          best = Math.max(best, minimax([...board], depth + 1, !isMax));
-          board[i] = "";
-        }
-      }
-      return best;
-    } else {
-      let best = 1000;
-      for (var i = 0; i < 9; i++) {
-        if (board[i].length === 0) {
-          board[i] = "circle";
-          best = Math.min(best, minimax([...board], depth + 1, !isMax));
-          board[i] = "";
-        }
-      }
-      return best;
-    }
-  }
-
   function isMovesLeft(board) {
     for (var i = 0; i < 9; i++) if (board[i].length === 0) return true;
     return false;
-  }
-
-  function evaluate(board) {
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        if (board[a] === "circle") {
-          return -10;
-        } else if (board[a] === "x") {
-          return 10;
-        }
-      }
-    }
-    return 0;
   }
 
   return (
