@@ -15,7 +15,7 @@ function Board({ bot, value, ...props }) {
       });
     }
     setGameOver(false);
-  }, [bot, value]);
+  }, [bot, value, findBestMove]);
 
   function mark(id) {
     if (!gameOver) {
@@ -83,12 +83,11 @@ function Board({ bot, value, ...props }) {
 
   function findBestMove() {
     var bestVal = -1000;
-    var bestMove;
     let row = -1;
     let moveVal;
     let brd = [...classes];
     for (let i = 0; i < 9; i++) {
-      if (brd[i].length == 0) {
+      if (brd[i].length === 0) {
         brd[i] = "x";
         moveVal = minimax([...brd], 0, false);
         brd[i] = "";
@@ -103,15 +102,15 @@ function Board({ bot, value, ...props }) {
 
   function minimax(board, depth, isMax) {
     var score = evaluate(board);
-    if (score == 10) return score;
-    if (score == -10) return score;
+    if (score === 10) return score;
+    if (score === -10) return score;
 
-    if (isMovesLeft(board) == false) return 0;
+    if (isMovesLeft(board) === false) return 0;
 
     if (isMax) {
-      var best = -1000;
+      let best = -1000;
       for (let i = 0; i < 9; i++) {
-        if (board[i].length == 0) {
+        if (board[i].length === 0) {
           board[i] = "x";
           best = Math.max(best, minimax([...board], depth + 1, !isMax));
           board[i] = "";
@@ -119,9 +118,9 @@ function Board({ bot, value, ...props }) {
       }
       return best;
     } else {
-      var best = 1000;
+      let best = 1000;
       for (var i = 0; i < 9; i++) {
-        if (board[i].length == 0) {
+        if (board[i].length === 0) {
           board[i] = "circle";
           best = Math.min(best, minimax([...board], depth + 1, !isMax));
           board[i] = "";
@@ -132,7 +131,7 @@ function Board({ bot, value, ...props }) {
   }
 
   function isMovesLeft(board) {
-    for (var i = 0; i < 9; i++) if (board[i].length == 0) return true;
+    for (var i = 0; i < 9; i++) if (board[i].length === 0) return true;
     return false;
   }
 
@@ -140,9 +139,9 @@ function Board({ bot, value, ...props }) {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        if (board[a] == "circle") {
+        if (board[a] === "circle") {
           return -10;
-        } else if (board[a] == "x") {
+        } else if (board[a] === "x") {
           return 10;
         }
       }

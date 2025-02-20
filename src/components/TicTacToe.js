@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./TicTacToe.css";
 import Board from "./Board.js";
 import Modal from "react-bootstrap/Modal";
