@@ -18,7 +18,7 @@ function App() {
       <Button variant="dark" className="ml-1 mt2" onClick={() => nav(`/P2`)}>
         Two Players
       </Button>
-      <Routes>
+      <Routes basename="/TicTacToe">
         <Route path="/P1" element={<TicTacToe bot={true} />} />
         <Route path="/P2" element={<TicTacToe bot={false} />} />
       </Routes>

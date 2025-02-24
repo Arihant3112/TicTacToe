@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./TicTacToe.css";
 import Board from "./Board.js";
 import Modal from "react-bootstrap/Modal";
@@ -17,13 +17,20 @@ function TicTacToe({ bot }) {
   const [msg, setMsg] = React.useState("");
 
   const [value, setValue] = React.useState(0);
-  window.addEventListener("resize", () => {
-    setBoardSize((0.8 * window.innerWidth) / 2);
+
+  useEffect(() => {
+    const resize = () => {
+      setBoardSize((0.8 * window.innerWidth) / 2);
+    };
+    window.addEventListener("resize", resize);
+    return () => {
+      window.removeEventListener("resize", resize);
+    };
   });
+
   const handleCallBack = (data) => {
     setMsg(data);
     handleShow();
-    console.log(data);
   };
   function forceUpdate() {
     handleClose();
