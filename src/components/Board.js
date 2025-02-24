@@ -111,6 +111,7 @@ function Board({ bot, value, ...props }) {
   }, [bot, value]);
 
   function mark(id) {
+    if (classes[id]) return;
     if (!gameOver) {
       function marking(prev) {
         prev[id] = turn ? "circle" : "x";
